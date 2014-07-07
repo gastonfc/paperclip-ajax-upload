@@ -55,4 +55,8 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+  resources :posts do
+    post :add_files, :on => :member
+  end
 end
