@@ -1,4 +1,5 @@
 class PostFile < ActiveRecord::Base
-  belongs_to :post
-  has_attached_file :attachment, paperclip_configurations
+  belongs_to :user
+  has_attached_file :attachment
+  validates_attachment_content_type :attachment, :content_type => /\Aimage\/.*\Z/
 end

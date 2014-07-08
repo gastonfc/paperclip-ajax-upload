@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :add_files]
 
   # GET /users
   # GET /users.json
@@ -61,6 +61,18 @@ class UsersController < ApplicationController
     end
   end
 
+  before_filter :parse_raw_upload, :only => :add_files
+
+  def add_files
+    @post_file = @user.post_files.build(attachment: @raw_file)
+    if @post_file.save
+      render json: { success: true }
+    else
+      render json: { success: false }
+    end
+  end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -70,5 +82,14 @@ class UsersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:name, :avatar)
+    end
+
+    def parse_raw_upload
+      if env['HTTP_X_FILE_UPLOAD'] == 'true'
+        @raw_file = env['rack.input']
+        @raw_file.class.class_eval { attr_accessor :original_filename, :content_type }
+        @raw_file.original_filename = env['HTTP_X_FILE_NAME']
+        @raw_file.content_type = env['HTTP_X_MIME_TYPE']
+      end
     end
 end
