@@ -2,12 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-body {
-  background-color: #eee;
-
-}
-
-.filedrag {
+/* .filedrag {
 	display: none;
 	font-weight: bold;
 	text-align: center;
@@ -25,6 +20,11 @@ body {
 	border-color: #f00;
 	border-style: solid;
 	box-shadow: inset 0 3px 4px #888;
+}
+*/
+
+body.file-hover .upload-files-ctrl {
+  background-color: yellow;
 }
 
 .uploads > div {

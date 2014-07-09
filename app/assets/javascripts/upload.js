@@ -17,12 +17,8 @@ $(function () {
     return upload.appendTo(cont);
   }
 
-  function getFileProgressBar(cont) {
-    return $(".progressbar div", cont);
-  }
-
   function sendFile(url, file, cont) {
-    var pbar = getFileProgressBar(cont),
+    var pbar = $(".progressbar div", cont),
         data = new FormData();
 
     data.append("datafile", file);
@@ -55,16 +51,15 @@ $(function () {
   function fileDragHover(e) {
     e.preventDefault();
     e.stopPropagation();
-    $(e.target)[(e.type === "dragover" ? "addClass" : "removeClass")]("hover");
+    $("body")[(e.type === "dragover" ? "addClass" : "removeClass")]("file-hover");
   }
 
-  function initForm(form) {
-    var fileselect = $(".filefield", form),
-        filedrag = $(".filedrag", form),
-        submitbutton = $('input[type="submit"]', form),
-        url = form.attr("action"),
-        uploadtemplate = $(".uploads>*", form).detach(),
-        uploadlist_cont = $(".uploads", form);
+  function init_component(component) {
+    var fileselect = $(".file-field", component),
+        submitbutton = $('input[type="submit"]', component),
+        url = component.attr("data-action"),
+        uploadtemplate = $(".upload-files-list>*", component).detach(),
+        uploadlist_cont = $(".upload-files-list", component);
 
     function fileSelectHandler(e) {
       var filecont;
@@ -85,12 +80,10 @@ $(function () {
     // is XHR2 available?
     var xhr = new XMLHttpRequest();
     if (xhr.upload) {
+      console.log("comp", component);
 
       // file drop
-      filedrag.on("dragover", fileDragHover);
-      filedrag.on("dragleave", fileDragHover);
-      filedrag.on("drop", fileSelectHandler);
-      filedrag.show();
+      component.on("drop", fileSelectHandler);
 
       // remove submit button
       submitbutton.hide();
@@ -99,9 +92,11 @@ $(function () {
   }
 
   if (window.File && window.FileList && window.FileReader) {
-    $(".autoupload").each(function (i, e) {
-      initForm($(e));
+    $(".upload-files-ctrl").each(function (i, e) {
+      init_component($(e));
     });
+
+    $("body").on("dragover dragleave", fileDragHover);
   }
 
 });

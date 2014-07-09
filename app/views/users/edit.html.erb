@@ -2,19 +2,21 @@
 
 <%= render 'form' %>
 
-<%= form_tag(add_files_user_path(@user), :class => "autoupload", :multipart => true, method: "post") do %>
-  <p><label for="upload_file">Select File</label> : 
-  <%= file_field 'upload', 'datafile', :multiple => true, :class => "filefield" %></p>
-  <%= submit_tag "Upload" %>
-  <div class="filedrag">drop files here</div>
-  <div class="uploads">
-    <div>
-      <span class="name"></span> <span class="size"></span> <span class="type"></span>
-      <div class="progressbar"></div>
+<!-- <.%= form_tag(add_files_user_path(@user), :class => "autoupload", :multipart => true, method: "post") do %.> -->
+  <div class="upload-files-ctrl" data-action="<%= add_files_user_path(@user) %>">
+    <div class="button">
+      <%= file_field 'upload', 'datafile', :multiple => true, :class => "file-field" %>
+    </div>
+    <%= submit_tag "Upload" %>
+
+    <div class="upload-files-list">
+      <div>
+        <span class="name"></span> <span class="size"></span> <span class="type"></span>
+        <div class="progressbar"></div>
+      </div>
     </div>
   </div>
-  <div class="messages"></div>
-<% end %>
+<!-- <.% end %.> -->
 
 <%= link_to 'Show', @user %> |
 <%= link_to 'Back', users_path %>
