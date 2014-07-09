@@ -63,7 +63,7 @@ $(function () {
   function initForm(form) {
     var fileselect = $(".filefield", form),
         filedrag = $(".filedrag", form),
-        submitbutton = $(".submit", form),
+        submitbutton = $('input[type="submit"]', form),
         url = form.attr("action");
 
     function fileSelectHandler(e) {
