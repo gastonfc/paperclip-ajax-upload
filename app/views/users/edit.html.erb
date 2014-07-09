@@ -7,7 +7,12 @@
   <%= file_field 'upload', 'datafile', :multiple => true, :class => "filefield" %></p>
   <%= submit_tag "Upload" %>
   <div class="filedrag">drop files here</div>
-  <div class="uploads"></div>
+  <div class="uploads">
+    <div>
+      <span class="name"></span> <span class="size"></span> <span class="type"></span>
+      <div class="progressbar"></div>
+    </div>
+  </div>
   <div class="messages"></div>
 <% end %>
 

@@ -5,18 +5,16 @@ $(function () {
       return ( size / m.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['bytes', 'kB', 'MB', 'GB', 'TB'][i];
   }
 
-  function showFile(file, cont) {
-    var uploadcont = $("<div>");
+  function showFile(file, template, cont) {
+    var upload = template.clone();
 
-    $("<div>")
-      .addClass("info")
-      .text(file.name + " (" + file.type + ") size: " + humanReadableFileSize(file.size))
-      .appendTo(uploadcont);
-    $("<div>")
-      .addClass("progressbar")
-      .appendTo(uploadcont).append($("<div>"));
+    $(".name", upload).text(file.name);
+    $(".type", upload).text(file.type);
+    $(".size", upload).text(humanReadableFileSize(file.size));
 
-    return uploadcont.appendTo($(".uploads", cont));
+    $(".progressbar", upload).append($("<div>"));
+
+    return upload.appendTo(cont);
   }
 
   function getFileProgressBar(cont) {
@@ -64,7 +62,9 @@ $(function () {
     var fileselect = $(".filefield", form),
         filedrag = $(".filedrag", form),
         submitbutton = $('input[type="submit"]', form),
-        url = form.attr("action");
+        url = form.attr("action"),
+        uploadtemplate = $(".uploads>*", form).detach(),
+        uploadlist_cont = $(".uploads", form);
 
     function fileSelectHandler(e) {
       var filecont;
@@ -76,7 +76,7 @@ $(function () {
 
       // process all File objects
       for (var i = 0, f; f = files[i]; i++) {
-        filecont = showFile(f, form);
+        filecont = showFile(f, uploadtemplate, uploadlist_cont);
         sendFile(url, f, filecont);
       }
     }
