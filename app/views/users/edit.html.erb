@@ -1,7 +1,6 @@
 <h1>Editing user</h1>
 
 <%= render 'form' %>
-
 <div id="my_file_uploader"></div>
 <script type="text/javascript">
     var uploader = new qq.FileUploader({
@@ -11,6 +10,15 @@
         customHeaders: { "X-File-Upload": "true" }
     });
 </script>
+
+<%= form_tag(add_files_user_path(@user), :class => "autoupload", :multipart => true, method: "post") do %>
+  <p><label for="upload_file">Select File</label> : 
+  <%= file_field 'upload', 'datafile', :multiple => true, :class => "filefield"%></p>
+  <%= submit_tag "Upload" %>
+  <div class="filedrag">drop files here</div>
+  <div class="uploads"></div>
+  <div class="messages"></div>
+<% end %>
 
 <%= link_to 'Show', @user %> |
 <%= link_to 'Back', users_path %>

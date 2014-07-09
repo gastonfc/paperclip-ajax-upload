@@ -17,6 +17,11 @@
         <td><%= link_to 'Show', user %></td>
         <td><%= link_to 'Edit', edit_user_path(user) %></td>
         <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td>
+          <% user.post_files.each do |post_file| %>
+            <%= image_tag post_file.attachment.url(:thumb) %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>

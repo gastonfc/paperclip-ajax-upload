@@ -61,17 +61,38 @@ class UsersController < ApplicationController
     end
   end
 
-  before_filter :parse_raw_upload, :only => :add_files
-
   def add_files
-    @post_file = @user.post_files.build(attachment: @raw_file)
-    if @post_file.save
-      render json: { success: true }
-    else
-      render json: { success: false }
+    saveFiles(params[:upload] || params)
+
+    respond_to do |format|
+      if @user.save
+        format.html { render text: "File has been uploaded successfully" }
+        format.js { }
+        format.json { render json: "File was created", status: :created }
+      else
+        format.html { render text: "Error uploading file" }
+        format.js { }
+        format.json { render json: "File was created", status: :error }
+      end
     end
   end
 
+  def saveFiles(upload)
+    datafile = upload['datafile']
+    if datafile.is_a?(Array)
+      @files = datafile.map { |df| @user.post_files.build(attachment: df) }
+    else
+      @files = [ @user.post_files.build(attachment: datafile) ]
+    end
+  end
+
+#    @post_file = @user.post_files.build(attachment: @raw_file)
+#    if @post_file.save
+#      render json: { success: true }
+#    else
+#      render json: { success: false }
+#    end
+#  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
