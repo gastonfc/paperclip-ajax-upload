@@ -2,32 +2,7 @@
 
 <%= render 'form' %>
 
-<!-- <.%= form_tag(add_files_user_path(@user), :class => "autoupload", :multipart => true, method: "post") do %.> -->
-  <div class="upload-files-ctrl" data-action="<%= add_files_user_path(@user) %>">
-    <div class="upload-files-drophere btn-lg">
-      <span class="glyphicon glyphicon-upload"></span>
-      Drop your files here
-    </div>
-    <div class="upload-files-form">
-      <div class="button-container">
-        <button type="button" class="btn btn-default">
-          <span class="glyphicon glyphicon-folder-open"></span> Select files
-        </button>
-        <%= file_field 'upload', 'datafile', :multiple => true, :class => "file-field btn" %>
-      </div>
-      <%= submit_tag "Upload" %>
-      <ul class="upload-files-list list-group">
-        <li class="panel-body list-group-item">
-          <span class="name"></span> <span class="size"></span> <span class="type"></span>
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-<!-- <.% end %.> -->
+<%= render partial: 'upload_files', locals: { action: add_files_user_path(@user) } %>
 
 <%= link_to 'Show', @user %> |
 <%= link_to 'Back', users_path %>

@@ -19,8 +19,10 @@
         <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
         <td>
           <% user.post_files.each do |post_file| %>
-            <%= image_tag post_file.attachment.url(:thumb) %>
+            <%= image_tag post_file.attachment.url(:thumb), style: "width: 20px" %>
           <% end %>
+          <br>
+          <%= render partial: 'upload_files', locals: { action: add_files_user_path(user) } %>
         </td>
       </tr>
     <% end %>
