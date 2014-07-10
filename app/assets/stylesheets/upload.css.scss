@@ -2,30 +2,39 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-/* .filedrag {
-	display: none;
-	font-weight: bold;
-	text-align: center;
-	padding: 1em 0;
-	margin: 1em 0;
-	color: #555;
-	border: 2px dashed #555;
-	border-radius: 7px;
-	cursor: default;
+body.file-hover .upload-files-ctrl {
+  background-color: #46b8DA;
+  position: relative;
+  border-radius: 4px;
 }
-
-.filedrag.hover
-{
-	color: #f00;
-	border-color: #f00;
-	border-style: solid;
-	box-shadow: inset 0 3px 4px #888;
+/*
+.upload-files-ctrl {
+  transition: background-color 0.2s ease-in-out;
 }
 */
 
-body.file-hover .upload-files-ctrl {
-  background-color: yellow;
+body.file-hover .upload-files-form {
+  opacity: 0;
 }
+
+body.file-hover .upload-files-drophere {
+  display: block;
+  opacity: 100;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  color: white;
+  text-shadow: 2px 2px rgba(0,0,0,0.3);
+}
+
+.upload-files-drophere {
+  display: none;
+  opacity: 0;
+  position: relative;
+  top: 0;
+}
+
 
 .uploads > div {
   margin-bottom: 10px;
@@ -34,23 +43,20 @@ body.file-hover .upload-files-ctrl {
   margin-bottom: 0.5em;
 }
 
-.progressbar {
-  display: block;
-	width: 240px;
-  height: 10px;
-	border: 1px solid #aaa;
-  padding: 0;
-  margin: 0;
-}
-.progressbar div {
-  height: 10px;
-  background-color: #aaa;
-  width: 0;
-}
-.progressbar div.success {
-  background-color: #0c0;
-}
-.progressbar div.failed {
-  background-color: #c00;
+.button-container {
+  display: inline-block;
+  width: 200px;
 }
 
+.button-container {
+  position: relative;
+}
+.button-container > * {
+  width: 100%;
+}
+.button-container > input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}

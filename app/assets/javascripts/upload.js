@@ -12,13 +12,11 @@ $(function () {
     $(".type", upload).text(file.type);
     $(".size", upload).text(humanReadableFileSize(file.size));
 
-    $(".progressbar", upload).append($("<div>"));
-
     return upload.appendTo(cont);
   }
 
   function sendFile(url, file, cont) {
-    var pbar = $(".progressbar div", cont),
+    var pbar = $(".progress .progress-bar", cont),
         data = new FormData();
 
     data.append("datafile", file);
@@ -29,13 +27,14 @@ $(function () {
         xhr.upload.addEventListener("progress", function (progress) {
           var percentage = Math.floor((progress.loaded / progress.total) * 100);
           pbar.width(percentage + "%");
+          pbar.attr("aria-valuenow", percentage);
         });
         xhr.onreadystatechange = function (e) {
           if (xhr.readyState == 4) {
             if (xhr.status == 200) {
-              pbar.addClass("success");
+              pbar.addClass("progress-bar-success");
             } else {
-              pbar.addClass("failed");
+              pbar.addClass("progress-bar-danger");
             }
             pbar.width("100%");
           }
