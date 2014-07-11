@@ -62,27 +62,35 @@ class UsersController < ApplicationController
   end
 
   def add_files
-    saveFiles(params[:upload] || params)
+    get_file do |file|
 
-    respond_to do |format|
-      if @user.save
-        format.html { render text: "File has been uploaded successfully" }
-        format.js { }
-        format.json { render json: "File was created", status: :created }
+      if file.size > 400 * 1024
+        { success: false, error: "File size can't be greater than 40000KB" }
+      elsif not /image/ =~ file.content_type
+        { success: false, error: "Only images are accepted" }
       else
-        format.html { render text: "Error uploading file" }
-        format.js { }
-        format.json { render json: "File was created", status: :error }
+        @user.post_files.build(attachment: file)
+
+        if @user.save
+          { success: true }
+        else
+          { success: false, error: "The file couldn't be saved" }
+        end
       end
     end
   end
 
-  def saveFiles(upload)
+  def get_file()
+    upload = params[:upload] || params
     datafile = upload['datafile']
-    if datafile.is_a?(Array)
-      @files = datafile.map { |df| @user.post_files.build(attachment: df) }
-    else
-      @files = [ @user.post_files.build(attachment: datafile) ]
+
+    result = yield(datafile)
+
+    puts "From yield:", result
+
+    respond_to do |format|
+      format.html { render text: "File has been uploaded successfully" }
+      format.json { render json: result }
     end
   end
 

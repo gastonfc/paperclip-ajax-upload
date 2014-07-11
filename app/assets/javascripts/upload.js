@@ -1,4 +1,5 @@
-$(function () {
+(function ($, window) {
+  'use strict';
 
   function humanReadableFileSize(size) {
       var m = Math, i = m.floor( m.log(size) / m.log(1024) );
@@ -15,31 +16,53 @@ $(function () {
     return upload.appendTo(cont);
   }
 
-  function sendFile(url, file, cont) {
-    var pbar = $(".progress .progress-bar", cont),
-        data = new FormData();
+  function isResponseJSON(xhr) {
+    return /json/.test(xhr.getResponseHeader('content-type'));
+  }
+
+  function setProgressBarValue(progressbar, value) {
+    progressbar.width(value + "%");
+    progressbar.attr("aria-valuenow", value);
+  }
+
+  function setProgressBarResult(progressbar, success, error) {
+    progressbar.addClass("progress-bar-" + (success ? "success" : "danger")).width("100%").text(error || "");
+    setProgressBarValue(progressbar, 100);
+  }
+
+
+  function showXhrResultsIn(progressbar) {
+    return function () {
+      var xhr = this;
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {
+          if (isResponseJSON(xhr)) {
+            var result = JSON.parse(xhr.responseText);
+            setProgressBarResult(progressbar, result.success, result.error);
+          } else {
+            setProgressBarResult(progressbar, true); 
+          }
+        } else {
+          setProgressBarResult(progressbar, false, "Server error: " + xhr.status);
+        }
+      }
+    }
+  }
+
+  function sendFileByAjax(url, file, pbar) {
+    var data = new FormData();
 
     data.append("datafile", file);
 
     var xhr = new XMLHttpRequest();
     if (xhr.upload) {
-
         xhr.upload.addEventListener("progress", function (progress) {
           var percentage = Math.floor((progress.loaded / progress.total) * 100);
-          pbar.width(percentage + "%");
-          pbar.attr("aria-valuenow", percentage);
+          setProgressBarValue(pbar, percentage);
         });
-        xhr.onreadystatechange = function (e) {
-          if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
-              pbar.addClass("progress-bar-success");
-            } else {
-              pbar.addClass("progress-bar-danger");
-            }
-            pbar.width("100%");
-          }
-        }
-        xhr.open("POST", url, true);
+        xhr.onreadystatechange = showXhrResultsIn(pbar);
+        xhr.open("POST", url + '.json', true);
+
         // Add csrf token for Rails
         var token = $('meta[name="csrf-token"]').attr('content');
         xhr.setRequestHeader("X-CSRF-Token", token);
@@ -53,44 +76,81 @@ $(function () {
     $("body")[(e.type === "dragover" ? "addClass" : "removeClass")]("file-hover");
   }
 
+  function isFileValid(component, file) {
+      var maxsize = component.attr("data-max-size"),
+          minsize = component.attr("data-min-size"),
+          content_type_pattern = component.attr("data-valid-content-type-pattern");
+
+      if (content_type_pattern) {
+        var re = new RegExp(content_type_pattern);
+        if (!re.test(file.type)) {
+          return { success: false, error: 'This file type is not allowed' };
+        }
+      }
+      if (maxsize) {
+        maxsize = parseInt(maxsize, 10);
+        if (maxsize && (file.size > maxsize)) {
+          return { success: false, error: "File size can't be greater than " + humanReadableFileSize(maxsize) };
+        }
+      }
+      if (minsize) {
+        minsize = parseInt(minsize, 10);
+        if (minsize && (file.size > minsize)) {
+          return { success: false, error: "File size must be at least " + humanReadableFileSize(minsize) };
+        }
+      }
+      return { success: true }
+  }
+
+  function getFileSelectHandler(component) {
+      var uploadtemplate = $(".upload-files-list>*", component).detach(),
+          url = component.attr("data-action"),
+          uploadlist_cont = $(".upload-files-list", component);
+
+      return function (e) {
+        var filecont,
+            // fetch FileList object
+            files = e.target.files || e.originalEvent.dataTransfer.files,
+            validation,
+            pbar;
+
+        // cancel event and hover styling
+        fileDragHover(e);
+
+        // process all File objects
+        for (var i = 0, f; f = files[i]; i++) {
+          filecont = showFile(f, uploadtemplate, uploadlist_cont);
+          pbar = $(".progress .progress-bar", filecont),
+
+          validation = isFileValid(component, f);
+          if (validation.success) {
+            sendFileByAjax(url, f, pbar);
+          } else {
+            setProgressBarResult(pbar, validation.success, validation.error);
+          }
+        }
+      }
+  }
+
   function init_component(component) {
     var fileselect = $(".file-field", component),
         submitbutton = $('input[type="submit"]', component),
-        url = component.attr("data-action"),
-        uploadtemplate = $(".upload-files-list>*", component).detach(),
-        uploadlist_cont = $(".upload-files-list", component);
+        fileSelectHandler = getFileSelectHandler(component);
 
-    function fileSelectHandler(e) {
-      var filecont;
-      // cancel event and hover styling
-      fileDragHover(e);
-
-      // fetch FileList object
-      var files = e.target.files || e.originalEvent.dataTransfer.files;
-
-      // process all File objects
-      for (var i = 0, f; f = files[i]; i++) {
-        filecont = showFile(f, uploadtemplate, uploadlist_cont);
-        sendFile(url, f, filecont);
-      }
-    }
     fileselect.on("change", fileSelectHandler);
 
     // is XHR2 available?
     var xhr = new XMLHttpRequest();
     if (xhr.upload) {
-      console.log("comp", component);
-
       // file drop
       component.on("drop", fileSelectHandler);
 
       // remove submit button
       submitbutton.hide();
     }
-
   }
 
-  if (window.File && window.FileList && window.FileReader) {
+  function initpage() {
     $(".upload-files-ctrl").each(function (i, e) {
       init_component($(e));
     });
@@ -98,4 +158,8 @@ $(function () {
     $("body").on("dragover dragleave", fileDragHover);
   }
 
-});
+  if (window.File && window.FileList && window.FileReader) {
+    $(initpage);
+    $(document).on('page:load', initpage);
+  }
+}) (jQuery, window);

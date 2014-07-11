@@ -7,11 +7,6 @@ body.file-hover .upload-files-ctrl {
   position: relative;
   border-radius: 4px;
 }
-/*
-.upload-files-ctrl {
-  transition: background-color 0.2s ease-in-out;
-}
-*/
 
 body.file-hover .upload-files-form {
   opacity: 0;
@@ -60,5 +55,7 @@ body.file-hover .upload-files-drophere {
   position: absolute;
   top: 0;
   left: 0;
+  filter: alpha(opacity=0);
   opacity: 0;
+
 }

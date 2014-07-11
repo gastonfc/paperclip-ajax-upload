@@ -1,26 +1,28 @@
-<!-- <.%= form_tag(add_files_user_path(@user), :class => "autoupload", :multipart => true, method: "post") do %.> -->
-  <div class="upload-files-ctrl" data-action="<%= action %>">
-    <div class="upload-files-drophere">
-      <span class="glyphicon glyphicon-upload"></span>
-      Drop your files here
-    </div>
-    <div class="upload-files-form">
-      <div class="button-container">
-        <button type="button" class="btn btn-default">
-          <span class="glyphicon glyphicon-folder-open"></span> Select files
-        </button>
-        <%= file_field 'upload', 'datafile', :multiple => true, :class => "file-field btn" %>
-      </div>
-      <%= submit_tag "Upload" %>
-      <ul class="upload-files-list list-group">
-        <li class="panel-body list-group-item">
-          <span class="name"></span> <span class="size"></span> <span class="type"></span>
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
+<div class="upload-files-ctrl" 
+     data-action="<%= upload_files[:action]%>"
+     data-max-size="<%= upload_files[:max_size] || "" %>"
+     data-min-size="<%= upload_files[:min_size] || "" %>"
+     data-valid-content-type-pattern="<%= upload_files[:content_type_pattern] || "" %>" >
+
+  <div class="upload-files-drophere">
+    <span class="glyphicon glyphicon-upload"></span>
+    Drop your files here
   </div>
-<!-- <.% end %.> -->
+  <div class="upload-files-form">
+    <div class="button-container">
+      <button type="button" class="btn btn-default">
+        <span class="glyphicon glyphicon-folder-open"></span> Select files
+      </button>
+      <%= file_field 'upload', 'datafile', :multiple => true, :class => "file-field btn" %>
+    </div>
+    <ul class="upload-files-list list-group">
+      <li class="panel-body list-group-item">
+        <span class="name"></span> <span class="size"></span> <span class="type"></span>
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
