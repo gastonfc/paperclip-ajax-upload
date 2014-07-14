@@ -30,7 +30,6 @@
     setProgressBarValue(progressbar, 100);
   }
 
-
   function showXhrResultsIn(progressbar) {
     return function () {
       var xhr = this;
@@ -52,7 +51,7 @@
   function sendFileByAjax(url, file, pbar) {
     var data = new FormData();
 
-    data.append("datafile", file);
+    data.append("file", file);
 
     var xhr = new XMLHttpRequest();
     if (xhr.upload) {

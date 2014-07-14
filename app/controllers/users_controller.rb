@@ -85,7 +85,7 @@ class UsersController < ApplicationController
 
   def get_file()
     upload = params[:upload] || params
-    datafile = upload['datafile']
+    datafile = upload['file']
 
     result = yield(datafile)
 

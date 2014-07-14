@@ -1,4 +1,4 @@
-<div class="ajax-upload-ctrl" 
+<div class="ajax-upload-ctrl"
      data-action="<%= upload_files[:action]%>"
      data-max-size="<%= upload_files[:max_size] || "" %>"
      data-min-size="<%= upload_files[:min_size] || "" %>"
@@ -13,7 +13,7 @@
       <button type="button" class="btn btn-default">
         <span class="glyphicon glyphicon-folder-open"></span> Select files
       </button>
-      <%= file_field 'upload', 'datafile', :multiple => true, :class => "file-field btn" %>
+      <%= file_field 'upload', 'file', :multiple => true, :class => "file-field btn" %>
     </div>
     <ul class="ajax-upload-list list-group">
       <li class="panel-body list-group-item">
