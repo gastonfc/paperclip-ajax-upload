@@ -1,21 +1,21 @@
-<div class="upload-files-ctrl" 
+<div class="ajax-upload-ctrl" 
      data-action="<%= upload_files[:action]%>"
      data-max-size="<%= upload_files[:max_size] || "" %>"
      data-min-size="<%= upload_files[:min_size] || "" %>"
      data-valid-content-type-pattern="<%= upload_files[:content_type_pattern] || "" %>" >
 
-  <div class="upload-files-drophere">
+  <div class="ajax-upload-drophere">
     <span class="glyphicon glyphicon-upload"></span>
     Drop your files here
   </div>
-  <div class="upload-files-form">
+  <div class="ajax-upload-form">
     <div class="button-container">
       <button type="button" class="btn btn-default">
         <span class="glyphicon glyphicon-folder-open"></span> Select files
       </button>
       <%= file_field 'upload', 'datafile', :multiple => true, :class => "file-field btn" %>
     </div>
-    <ul class="upload-files-list list-group">
+    <ul class="ajax-upload-list list-group">
       <li class="panel-body list-group-item">
         <span class="name"></span> <span class="size"></span> <span class="type"></span>
         <div class="progress">

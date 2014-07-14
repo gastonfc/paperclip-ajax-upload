@@ -111,9 +111,9 @@
   }
 
   function getFileSelectHandler(component) {
-    var uploadtemplate = $(".upload-files-list>*", component).detach(),
+    var uploadtemplate = $(".ajax-upload-list>*", component).detach(),
         url = component.attr("data-action"),
-        uploadlist_cont = $(".upload-files-list", component);
+        uploadlist_cont = $(".ajax-upload-list", component);
 
     return function (e) {
       var filecont,
@@ -160,7 +160,7 @@
   }
 
   function initpage() {
-    $(".upload-files-ctrl").each(function (i, e) {
+    $(".ajax-upload-ctrl").each(function (i, e) {
       init_component($(e));
     });
 
