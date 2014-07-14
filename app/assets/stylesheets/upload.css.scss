@@ -40,26 +40,15 @@ body.file-hover .upload-files-ctrl.component-file-hover .upload-files-drophere {
   top: 0;
 }
 
-
-.uploads > div {
-  margin-bottom: 10px;
-}
-.uploads .info {
-  margin-bottom: 0.5em;
-}
-
-.button-container {
+.upload-files-ctrl .button-container {
   display: inline-block;
+  position: relative;
   width: 200px;
 }
-
-.button-container {
-  position: relative;
-}
-.button-container > * {
+.upload-files-ctrl .button-container > * {
   width: 100%;
 }
-.button-container > input {
+.upload-files-ctrl .button-container > input {
   position: absolute;
   top: 0;
   left: 0;
