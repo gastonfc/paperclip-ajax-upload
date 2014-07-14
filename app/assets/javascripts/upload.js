@@ -76,60 +76,68 @@
     $("body")[(e.type === "dragover" ? "addClass" : "removeClass")]("file-hover");
   }
 
-  function isFileValid(component, file) {
-      var maxsize = component.attr("data-max-size"),
-          minsize = component.attr("data-min-size"),
-          content_type_pattern = component.attr("data-valid-content-type-pattern");
+  function fileDragHoverComponent(component) {
+//     e.preventDefault();
+  //   e.stopPropagation();
+    return function (e) {
+      $(component)[(e.type === "dragover" ? "addClass" : "removeClass")]("component-file-hover");
+    }
+  }
 
-      if (content_type_pattern) {
-        var re = new RegExp(content_type_pattern);
-        if (!re.test(file.type)) {
-          return { success: false, error: 'This file type is not allowed' };
-        }
+  function isFileValid(component, file) {
+    var maxsize = component.attr("data-max-size"),
+        minsize = component.attr("data-min-size"),
+        content_type_pattern = component.attr("data-valid-content-type-pattern");
+
+    if (content_type_pattern) {
+      var re = new RegExp(content_type_pattern);
+      if (!re.test(file.type)) {
+        return { success: false, error: 'This file type is not allowed' };
       }
-      if (maxsize) {
-        maxsize = parseInt(maxsize, 10);
-        if (maxsize && (file.size > maxsize)) {
-          return { success: false, error: "File size can't be greater than " + humanReadableFileSize(maxsize) };
-        }
+    }
+    if (maxsize) {
+      maxsize = parseInt(maxsize, 10);
+      if (maxsize && (file.size > maxsize)) {
+        return { success: false, error: "File size can't be greater than " + humanReadableFileSize(maxsize) };
       }
-      if (minsize) {
-        minsize = parseInt(minsize, 10);
-        if (minsize && (file.size > minsize)) {
-          return { success: false, error: "File size must be at least " + humanReadableFileSize(minsize) };
-        }
+    }
+    if (minsize) {
+      minsize = parseInt(minsize, 10);
+      if (minsize && (file.size > minsize)) {
+        return { success: false, error: "File size must be at least " + humanReadableFileSize(minsize) };
       }
-      return { success: true }
+    }
+    return { success: true }
   }
 
   function getFileSelectHandler(component) {
-      var uploadtemplate = $(".upload-files-list>*", component).detach(),
-          url = component.attr("data-action"),
-          uploadlist_cont = $(".upload-files-list", component);
+    var uploadtemplate = $(".upload-files-list>*", component).detach(),
+        url = component.attr("data-action"),
+        uploadlist_cont = $(".upload-files-list", component);
 
-      return function (e) {
-        var filecont,
-            // fetch FileList object
-            files = e.target.files || e.originalEvent.dataTransfer.files,
-            validation,
-            pbar;
+    return function (e) {
+      var filecont,
+          // fetch FileList object
+          files = e.target.files || e.originalEvent.dataTransfer.files,
+          validation,
+          pbar;
 
-        // cancel event and hover styling
-        fileDragHover(e);
+      // cancel event and hover styling
+      fileDragHover(e);
 
-        // process all File objects
-        for (var i = 0, f; f = files[i]; i++) {
-          filecont = showFile(f, uploadtemplate, uploadlist_cont);
-          pbar = $(".progress .progress-bar", filecont),
+      // process all File objects
+      for (var i = 0, f; f = files[i]; i++) {
+        filecont = showFile(f, uploadtemplate, uploadlist_cont);
+        pbar = $(".progress .progress-bar", filecont),
 
-          validation = isFileValid(component, f);
-          if (validation.success) {
-            sendFileByAjax(url, f, pbar);
-          } else {
-            setProgressBarResult(pbar, validation.success, validation.error);
-          }
+        validation = isFileValid(component, f);
+        if (validation.success) {
+          sendFileByAjax(url, f, pbar);
+        } else {
+          setProgressBarResult(pbar, validation.success, validation.error);
         }
       }
+    }
   }
 
   function init_component(component) {
@@ -144,6 +152,7 @@
     if (xhr.upload) {
       // file drop
       component.on("drop", fileSelectHandler);
+      component.on("dragover dragleave", fileDragHoverComponent(component));
 
       // remove submit button
       submitbutton.hide();

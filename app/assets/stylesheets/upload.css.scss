@@ -25,6 +25,14 @@ body.file-hover .upload-files-drophere {
   padding: 0.5em;
 }
 
+body.file-hover .upload-files-ctrl.component-file-hover {
+  background-color: #7BD3ED;
+}
+
+body.file-hover .upload-files-ctrl.component-file-hover .upload-files-drophere {
+  text-shadow: 0 0 4px white;
+}
+
 .upload-files-drophere {
   display: none;
   opacity: 0;
@@ -57,5 +65,4 @@ body.file-hover .upload-files-drophere {
   left: 0;
   filter: alpha(opacity=0);
   opacity: 0;
-
 }

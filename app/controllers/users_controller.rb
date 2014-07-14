@@ -63,21 +63,24 @@ class UsersController < ApplicationController
 
   def add_files
     get_file do |file|
+      post_file = @user.post_files.build(attachment: file)
 
-      if file.size > 400 * 1024
-        { success: false, error: "File size can't be greater than 40000KB" }
-      elsif not /image/ =~ file.content_type
-        { success: false, error: "Only images are accepted" }
+      if post_file.save
+        { success: true }
       else
-        @user.post_files.build(attachment: file)
-
-        if @user.save
-          { success: true }
-        else
-          { success: false, error: "The file couldn't be saved" }
-        end
+        messages = get_attachment_errors(post_file.errors, :attachment)
+        { success: false, error: messages.join(". ") }
       end
     end
+  end
+
+  # Returns Paperclip's extra attributes for attachment's errors.
+  def get_attachment_errors(active_model_errors, attribute)
+    messages = []
+    active_model_errors.keys.each do |key|
+      messages.push(active_model_errors.full_messages_for(key)) unless key == attribute
+    end
+    return messages
   end
 
   def get_file()
@@ -85,8 +88,6 @@ class UsersController < ApplicationController
     datafile = upload['datafile']
 
     result = yield(datafile)
-
-    puts "From yield:", result
 
     respond_to do |format|
       format.html { render text: "File has been uploaded successfully" }
