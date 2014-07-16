@@ -1,9 +1,9 @@
-<div class="ajax-upload-ctrl"
-     <% if ajax_upload.include?(:id) %>id="<%= ajax_upload[:id] %>"<% end %>
+<div <% if ajax_upload.include?(:id) %>id="<%= ajax_upload[:id] %>"<% end %>
+     class="ajax-upload-ctrl"
      data-action="<%= ajax_upload[:action]%>"
-     data-max-size="<%= ajax_upload[:max_size] || "" %>"
-     data-min-size="<%= ajax_upload[:min_size] || "" %>"
-     data-valid-content-type-pattern="<%= ajax_upload[:content_type_pattern] || "" %>"
+     <% if ajax_upload.include?(:max_size) %>data-max-size="<%= ajax_upload[:max_size]%>"<% end %>
+     <% if ajax_upload.include?(:min_size) %>data-min-size="<%= ajax_upload[:min_size]%>"<% end %>
+     <% if ajax_upload.include?(:content_type_pattern) %>data-valid-content-type-pattern="<%= ajax_upload[:content_type_pattern] || "" %>"<% end %>
      <% if ajax_upload.include?(:on_upload_callback) %>data-on-upload-callback="<%= ajax_upload[:on_upload_callback] %>"<% end %>>
 
   <div class="ajax-upload-drophere">
