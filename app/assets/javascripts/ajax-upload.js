@@ -30,7 +30,10 @@
     setProgressBarValue(progressbar, 100);
   }
 
-  function showXhrResultsIn(progressbar) {
+  function stateChangeCallback(component, progressbar) {
+    var upload_callback = component.attr("data-on-upload-callback"),
+        upload_callback_func = window[upload_callback] || function () { };
+
     return function () {
       var xhr = this;
       if (xhr.readyState == 4) {
@@ -38,18 +41,22 @@
           if (isResponseJSON(xhr)) {
             var result = JSON.parse(xhr.responseText);
             setProgressBarResult(progressbar, result.success, result.error);
+            upload_callback_func(result);
           } else {
-            setProgressBarResult(progressbar, true); 
+            setProgressBarResult(progressbar, false, "Server error: unexpected response");
+            upload_callback_func();
           }
         } else {
           setProgressBarResult(progressbar, false, "Server error: " + xhr.status);
+          upload_callback_func();
         }
       }
     }
   }
 
-  function sendFileByAjax(url, file, pbar) {
-    var data = new FormData();
+  function sendFileByAjax(file, component, pbar) {
+    var url = component.attr("data-action"),
+        data = new FormData();
 
     data.append("file", file);
 
@@ -59,7 +66,7 @@
           var percentage = Math.floor((progress.loaded / progress.total) * 100);
           setProgressBarValue(pbar, percentage);
         });
-        xhr.onreadystatechange = showXhrResultsIn(pbar);
+        xhr.onreadystatechange = stateChangeCallback(component, pbar);
         xhr.open("POST", url + '.json', true);
 
         // Add csrf token for Rails
@@ -76,8 +83,6 @@
   }
 
   function fileDragHoverComponent(component) {
-//     e.preventDefault();
-  //   e.stopPropagation();
     return function (e) {
       $(component)[(e.type === "dragover" ? "addClass" : "removeClass")]("component-file-hover");
     }
@@ -111,7 +116,6 @@
 
   function getFileSelectHandler(component) {
     var uploadtemplate = $(".ajax-upload-list>*", component).detach(),
-        url = component.attr("data-action"),
         uploadlist_cont = $(".ajax-upload-list", component);
 
     return function (e) {
@@ -131,7 +135,7 @@
 
         validation = isFileValid(component, f);
         if (validation.success) {
-          sendFileByAjax(url, f, pbar);
+          sendFileByAjax(f, component, pbar);
         } else {
           setProgressBarResult(pbar, validation.success, validation.error);
         }

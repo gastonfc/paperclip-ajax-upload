@@ -22,7 +22,7 @@
             <%= image_tag post_file.attachment.url(:thumb), style: "width: 20px" %>
           <% end %>
           <br>
-          <%= render partial: 'upload_files', object: { action: add_files_user_path(user) } %>
+          <%= render partial: '/shares/ajax_upload', object: { action: add_files_user_path(user) } %>
         </td>
       </tr>
     <% end %>

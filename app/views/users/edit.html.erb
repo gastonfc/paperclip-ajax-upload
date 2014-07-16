@@ -2,7 +2,15 @@
 
 <%= render 'form' %>
 
-<%= render partial: 'upload_files', object: { action: add_files_user_path(@user) } %>
+<%= render partial: '/shares/ajax_upload', object: { action: add_files_user_path(@user),
+                                                     id: "toto",
+                                                     on_upload_callback: "file_uploaded" } %>
+
+<script type="text/javascript">
+function file_uploaded(info) {
+  console.log(info);
+}
+</script>
 
 <%= link_to 'Show', @user %> |
 <%= link_to 'Back', users_path %>

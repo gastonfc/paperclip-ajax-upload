@@ -1,8 +1,10 @@
 <div class="ajax-upload-ctrl"
-     data-action="<%= upload_files[:action]%>"
-     data-max-size="<%= upload_files[:max_size] || "" %>"
-     data-min-size="<%= upload_files[:min_size] || "" %>"
-     data-valid-content-type-pattern="<%= upload_files[:content_type_pattern] || "" %>" >
+     <% if ajax_upload.include?(:id) %>id="<%= ajax_upload[:id] %>"<% end %>
+     data-action="<%= ajax_upload[:action]%>"
+     data-max-size="<%= ajax_upload[:max_size] || "" %>"
+     data-min-size="<%= ajax_upload[:min_size] || "" %>"
+     data-valid-content-type-pattern="<%= ajax_upload[:content_type_pattern] || "" %>"
+     <% if ajax_upload.include?(:on_upload_callback) %>data-on-upload-callback="<%= ajax_upload[:on_upload_callback] %>"<% end %>>
 
   <div class="ajax-upload-drophere">
     <span class="glyphicon glyphicon-upload"></span>
