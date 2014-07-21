@@ -41,14 +41,14 @@
           if (isResponseJSON(xhr)) {
             var result = JSON.parse(xhr.responseText);
             setProgressBarResult(progressbar, result.success, result.error);
-            upload_callback_func(result);
+            upload_callback_func.apply(component, [result]);
           } else {
             setProgressBarResult(progressbar, false, "Server error: unexpected response");
-            upload_callback_func();
+            upload_callback_func.apply(component);
           }
         } else {
           setProgressBarResult(progressbar, false, "Server error: " + xhr.status);
-          upload_callback_func();
+          upload_callback_func.apply(component);
         }
       }
     }
