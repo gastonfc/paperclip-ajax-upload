@@ -34,8 +34,18 @@
     return $(".progress-bar", filecont);
   }
 
+  function fileContainerRemove(filecont) {
+    filecont.slideUp("slow", function () { filecont.remove() });
+  }
+
   function setFileContainterStatus(filecont, success, error) {
+    var remove = function() { fileContainerRemove(filecont); };
     setProgressBarResult(getProgressBar(filecont), success, error);
+    if (success) {
+      setTimeout(remove, 2000);
+    } else {
+      $(".remove", filecont).fadeIn().css("cursor", "pointer"); filecont.click(remove);
+    }
   }
 
   function stateChangeCallback(component, filecont) {
