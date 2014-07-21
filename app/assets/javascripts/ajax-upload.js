@@ -3,7 +3,7 @@
 
   function humanReadableFileSize(size) {
       var m = Math, i = m.floor( m.log(size) / m.log(1024) );
-      return ( size / m.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['bytes', 'kB', 'MB', 'GB', 'TB'][i];
+      return ( size / m.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['bytes', 'KB', 'MB', 'GB', 'TB'][i];
   }
 
   function showFile(file, template, cont) {
@@ -30,7 +30,15 @@
     setProgressBarValue(progressbar, 100);
   }
 
-  function stateChangeCallback(component, progressbar) {
+  function getProgressBar(filecont) {
+    return $(".progress-bar", filecont);
+  }
+
+  function setFileContainterStatus(filecont, success, error) {
+    setProgressBarResult(getProgressBar(filecont), success, error);
+  }
+
+  function stateChangeCallback(component, filecont) {
     var upload_callback = component.attr("data-on-upload-callback"),
         upload_callback_func = window[upload_callback] || function () { };
 
@@ -40,23 +48,24 @@
         if (xhr.status == 200) {
           if (isResponseJSON(xhr)) {
             var result = JSON.parse(xhr.responseText);
-            setProgressBarResult(progressbar, result.success, result.error);
+            setFileContainterStatus(filecont, result.success, result.error);
             upload_callback_func.apply(component, [result]);
           } else {
-            setProgressBarResult(progressbar, false, "Server error: unexpected response");
+            setFileContainterStatus(filecont, false, "Server error: unexpected response");
             upload_callback_func.apply(component);
           }
         } else {
-          setProgressBarResult(progressbar, false, "Server error: " + xhr.status);
+          setFileContainterStatus(filecont, false, "Server error: " + xhr.status);
           upload_callback_func.apply(component);
         }
       }
     }
   }
 
-  function sendFileByAjax(file, component, pbar) {
+  function sendFileByAjax(file, component, filecont) {
     var url = component.attr("data-action"),
-        data = new FormData();
+        data = new FormData(),
+        pbar = getProgressBar(filecont);
 
     data.append("file", file);
 
@@ -66,7 +75,7 @@
           var percentage = Math.floor((progress.loaded / progress.total) * 100);
           setProgressBarValue(pbar, percentage);
         });
-        xhr.onreadystatechange = stateChangeCallback(component, pbar);
+        xhr.onreadystatechange = stateChangeCallback(component, filecont);
         xhr.open("POST", url + '.json', true);
 
         // Add csrf token for Rails
@@ -122,8 +131,7 @@
       var filecont,
           // fetch FileList object
           files = e.target.files || e.originalEvent.dataTransfer.files,
-          validation,
-          pbar;
+          validation;
 
       // cancel event and hover styling
       fileDragHover(e);
@@ -131,11 +139,10 @@
       // process all File objects
       for (var i = 0, f; f = files[i]; i++) {
         filecont = showFile(f, uploadtemplate, uploadlist_cont);
-        pbar = $(".progress .progress-bar", filecont),
 
         validation = isFileValid(component, f);
         if (validation.success) {
-          sendFileByAjax(f, component, pbar);
+          sendFileByAjax(f, component, filecont);
         } else {
           setProgressBarResult(pbar, validation.success, validation.error);
         }
