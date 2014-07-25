@@ -42,9 +42,9 @@
     var remove = function() { fileContainerRemove(filecont); };
     setProgressBarResult(getProgressBar(filecont), success, error);
     if (success) {
-      setTimeout(remove, 2000);
+      setTimeout(remove, 5000);
     } else {
-      $(".remove", filecont).fadeIn().css("cursor", "pointer"); filecont.click(remove);
+      $(".remove", filecont).fadeIn().css("cursor", "pointer").click(remove);
     }
   }
 
@@ -95,10 +95,30 @@
     }
   }
 
+  var timer;
+
+  function showFileDragActive(new_state) {
+    if (new_state) {
+      if (timer) {
+        clearTimeout(timer);
+        timer = 0;
+      } else {
+        $("body").addClass("file-hover");
+      }
+    } else {
+      if (!timer) {
+        timer = setTimeout(function () {
+          timer = 0;
+          $("body").removeClass("file-hover");
+        }, 300);
+      }
+    }
+  }
+
   function fileDragHover(e) {
     e.preventDefault();
     e.stopPropagation();
-    $("body")[(e.type === "dragover" ? "addClass" : "removeClass")]("file-hover");
+    showFileDragActive((e.type === "dragover"));
   }
 
   function fileDragHoverComponent(component) {
@@ -154,7 +174,7 @@
         if (validation.success) {
           sendFileByAjax(f, component, filecont);
         } else {
-          setProgressBarResult(pbar, validation.success, validation.error);
+          setFileContainterStatus(filecont, validation.success, validation.error);
         }
       }
     }

@@ -84,6 +84,7 @@ class UsersController < ApplicationController
   end
 
   def get_file()
+    puts "Params: #{params.inspect}\nparams[upload]: #{params[:upload].inspect}"
     upload = params[:upload] || params
     datafile = upload['file']
 

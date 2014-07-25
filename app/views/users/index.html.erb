@@ -1,5 +1,4 @@
 <h1>Listing users</h1>
-
 <table>
   <thead>
     <tr>
@@ -22,7 +21,7 @@
             <%= image_tag post_file.attachment.url(:thumb), style: "width: 20px" %>
           <% end %>
           <br>
-          <%= render partial: '/shares/ajax_upload', object: { action: add_files_user_path(user) } %>
+          <%= ajax_upload_control action: add_files_user_path(user) %>
         </td>
       </tr>
     <% end %>

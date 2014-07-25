@@ -41,6 +41,7 @@ body.file-hover .ajax-upload-ctrl.component-file-hover .ajax-upload-drophere {
   display: inline-block;
   position: relative;
   width: 200px;
+  margin-bottom: 0.6em;
 }
 .ajax-upload-ctrl .button-container > * {
   width: 100%;
@@ -52,3 +53,8 @@ body.file-hover .ajax-upload-ctrl.component-file-hover .ajax-upload-drophere {
   filter: alpha(opacity=0);
   opacity: 0;
 }
+.ajax-upload-ctrl .ajax-upload-list .progress { margin-bottom: 0 }
+.ajax-upload-ctrl .ajax-upload-list .name { font-weight: bold; padding-right: 2em }
+.ajax-upload-ctrl .ajax-upload-list .size { float: right }
+.ajax-upload-ctrl .ajax-upload-list .remove { display: none; float: right; margin: -0.8em -0.9em 0 0 }
+
